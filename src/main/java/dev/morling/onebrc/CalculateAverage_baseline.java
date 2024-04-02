@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
 
 public class CalculateAverage_baseline {
@@ -62,6 +63,7 @@ public class CalculateAverage_baseline {
         // .collect(toMap(e -> e.getKey(), e -> Math.round(e.getValue() * 10.0) / 10.0)));
         // System.out.println(measurements1);
 
+        long start = System.nanoTime();
         Collector<Measurement, MeasurementAggregator, ResultRow> collector = Collector.of(
                 MeasurementAggregator::new,
                 (a, m) -> {
@@ -87,6 +89,8 @@ public class CalculateAverage_baseline {
                 .map(l -> new Measurement(l.split(";")))
                 .collect(groupingBy(m -> m.station(), collector)));
 
+        long finish = System.nanoTime();
+        System.out.printf("Time taken = %s ms %n", TimeUnit.NANOSECONDS.toMillis(finish - start));
         System.out.println(measurements);
     }
 }
